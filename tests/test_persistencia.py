@@ -172,31 +172,6 @@ def test_alterar_situacao_para_adotado(session, criar_animal):
     assert recarregar(session, Animal, a.id).situacao == "adotado"
 
 
-def test_animal_adotado_guarda_o_adotante(session, criar_animal, criar_usuario):
-    animal = criar_animal()
-    adotante = criar_usuario(nome="Carlos")
-    animal.situacao = "adotado"
-    animal.adotante = adotante
-    session.commit()
-    adotante_id = adotante.id
-
-    salvo = recarregar(session, Animal, animal.id)
-    assert salvo.adotante.nome == "Carlos"
-    assert [a.nome for a in session.get(Usuario, adotante_id).animais_adotados] == ["Nina"]
-
-
-def test_excluir_adotante_nao_remove_o_animal(session, criar_animal, criar_usuario):
-    animal = criar_animal()
-    adotante = criar_usuario()
-    animal.adotante = adotante
-    session.commit()
-
-    session.delete(adotante)
-    session.commit()
-    salvo = recarregar(session, Animal, animal.id)
-    assert salvo is not None and salvo.adotante_id is None
-
-
 def test_situacao_invalida_e_rejeitada(session, criar_animal):
     with pytest.raises(IntegrityError):
         criar_animal(situacao="reservado")

@@ -27,13 +27,10 @@ class Animal(db.Model):
     situacao: Mapped[str] = mapped_column(db.String(20), nullable=False, default="disponivel")
     anunciante_id: Mapped[int] = mapped_column(
         db.Integer, db.ForeignKey("anunciantes.id"), nullable=False, index=True)
-    adotante_id: Mapped[Optional[int]] = mapped_column(
-        db.Integer, db.ForeignKey("usuarios.id"), index=True)
     created_at: Mapped[datetime] = mapped_column(db.DateTime, nullable=False, server_default=db.func.now())
     updated_at: Mapped[datetime] = mapped_column(db.DateTime, nullable=False, server_default=db.func.now(), onupdate=db.func.now())
 
     anunciante: Mapped["Anunciante"] = relationship("Anunciante", back_populates="animais")
-    adotante: Mapped[Optional["Usuario"]] = relationship("Usuario", back_populates="animais_adotados")
     fotos: Mapped[List["FotoAnimal"]] = relationship(
         "FotoAnimal", back_populates="animal", cascade="all, delete-orphan")
     interesses: Mapped[List["InteresseAdocao"]] = relationship(
