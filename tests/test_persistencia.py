@@ -62,15 +62,43 @@ def test_campo_obrigatorio_nulo_e_rejeitado(session):
         session.commit()
 
 
-def test_senha_e_armazenada_com_hash(session):
-    criado = auth_services.criar_usuario({
+def dados_cadastro(**campos):
+    dados = {
         "nome": "Joao", "cpf_cnpj": "111.222.333-44", "telefone": "27988887777",
         "email": "joao@teste.com", "senha": "minhasenha",
-    })
+        "endereco": {
+            "estado": "ES", "cidade": "Vitoria", "bairro": "Centro",
+            "rua": "Rua A", "numero": "s/n", "cep": "29000-000",
+        },
+    }
+    dados.update(campos)
+    return dados
+
+
+def test_senha_e_armazenada_com_hash(session):
+    criado = auth_services.criar_usuario(dados_cadastro())
     u = recarregar(session, Usuario, criado["id"])
     assert u.senha_hash != "minhasenha"
     assert auth_services.autenticar("joao@teste.com", "minhasenha")["id"] == u.id
     assert auth_services.autenticar("joao@teste.com", "errada") is None
+
+
+def test_cadastro_salva_o_endereco_do_usuario(session):
+    criado = auth_services.criar_usuario(dados_cadastro())
+    assert recarregar(session, Usuario, criado["id"]).endereco.numero == "s/n"
+
+
+def test_cadastro_sem_endereco_e_rejeitado(client, session):
+    dados = dados_cadastro()
+    del dados["endereco"]
+    assert client.post("/api/auth/register", json=dados).status_code == 400
+    assert contar(session, Usuario) == 0
+
+
+def test_cadastro_com_endereco_incompleto_e_rejeitado(client, session):
+    resposta = client.post("/api/auth/register", json=dados_cadastro(endereco={"estado": "ES"}))
+    assert resposta.status_code == 400
+    assert contar(session, Usuario) == 0
 
 
 def test_endereco_um_para_um_com_usuario(session, criar_usuario, criar_endereco):
@@ -142,6 +170,31 @@ def test_alterar_situacao_para_adotado(session, criar_animal):
     a.situacao = "adotado"
     session.commit()
     assert recarregar(session, Animal, a.id).situacao == "adotado"
+
+
+def test_animal_adotado_guarda_o_adotante(session, criar_animal, criar_usuario):
+    animal = criar_animal()
+    adotante = criar_usuario(nome="Carlos")
+    animal.situacao = "adotado"
+    animal.adotante = adotante
+    session.commit()
+    adotante_id = adotante.id
+
+    salvo = recarregar(session, Animal, animal.id)
+    assert salvo.adotante.nome == "Carlos"
+    assert [a.nome for a in session.get(Usuario, adotante_id).animais_adotados] == ["Nina"]
+
+
+def test_excluir_adotante_nao_remove_o_animal(session, criar_animal, criar_usuario):
+    animal = criar_animal()
+    adotante = criar_usuario()
+    animal.adotante = adotante
+    session.commit()
+
+    session.delete(adotante)
+    session.commit()
+    salvo = recarregar(session, Animal, animal.id)
+    assert salvo is not None and salvo.adotante_id is None
 
 
 def test_situacao_invalida_e_rejeitada(session, criar_animal):

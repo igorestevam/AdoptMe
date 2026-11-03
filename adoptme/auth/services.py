@@ -1,7 +1,9 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from adoptme.ext.db import db
-from .models import Usuario
+from .models import Usuario, Endereco
+
+CAMPOS_ENDERECO = ("estado", "cidade", "bairro", "rua", "numero", "cep")
 
 
 def _serialize(u: Usuario) -> dict:
@@ -25,6 +27,13 @@ def obter_usuario(usuario_id: int) -> dict | None:
 
 def criar_usuario(dados: dict) -> dict:
     # TODO: validar dados (email unico, formato de CPF/CNPJ, etc.)
+    endereco = dados.get("endereco")
+    if not isinstance(endereco, dict):
+        endereco = {}
+    faltando = [c for c in CAMPOS_ENDERECO if not endereco.get(c)]
+    if faltando:
+        raise ValueError(f"Endereco incompleto: {', '.join(faltando)}")
+
     u = Usuario(
         nome=dados["nome"],
         cpf_cnpj=dados["cpf_cnpj"],
@@ -32,6 +41,10 @@ def criar_usuario(dados: dict) -> dict:
         data_nascimento=dados.get("data_nascimento"),
         email=dados["email"],
         senha_hash=generate_password_hash(dados["senha"]),
+    )
+    u.endereco = Endereco(
+        complemento=endereco.get("complemento"),
+        **{c: endereco[c] for c in CAMPOS_ENDERECO},
     )
     db.session.add(u)
     db.session.commit()

@@ -13,6 +13,7 @@ def _serialize(a: Animal) -> dict:
         "descricao": a.descricao,
         "situacao": a.situacao,
         "anunciante_id": a.anunciante_id,
+        "adotante_id": a.adotante_id,
         "fotos": [f.url for f in a.fotos],
     }
 

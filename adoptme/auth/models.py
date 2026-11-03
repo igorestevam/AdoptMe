@@ -7,7 +7,7 @@ from adoptme.ext.db import db
 
 if TYPE_CHECKING:
     from adoptme.anunciantes.models import Anunciante
-    from adoptme.animais.models import InteresseAdocao
+    from adoptme.animais.models import Animal, InteresseAdocao
 
 
 # Usuario (conta + dados pessoais, comuns a adotantes e anunciantes)
@@ -30,6 +30,7 @@ class Usuario(db.Model):
         "Anunciante", back_populates="usuario", uselist=False, cascade="all, delete-orphan")
     interesses: Mapped[List["InteresseAdocao"]] = relationship(
         "InteresseAdocao", back_populates="usuario", cascade="all, delete-orphan")
+    animais_adotados: Mapped[List["Animal"]] = relationship("Animal", back_populates="adotante")
 
     def __repr__(self) -> str:
         return f"<Usuario id={self.id} email='{self.email}'>"

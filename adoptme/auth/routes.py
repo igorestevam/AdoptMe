@@ -14,7 +14,10 @@ def listar_usuarios():
 def register():
     dados = request.get_json() or {}
     # TODO: validacao completa dos campos obrigatorios
-    usuario = services.criar_usuario(dados)
+    try:
+        usuario = services.criar_usuario(dados)
+    except ValueError as e:
+        abort(400, description=str(e))
     return jsonify(usuario), 201
 
 
