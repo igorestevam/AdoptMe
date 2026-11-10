@@ -32,7 +32,7 @@ async function buscar() {
   }
   buscando.value = true
   try {
-    const { data } = await api.get('/mercadolivre/produtos', { params: { q: `${busca.value} pet`, limit: 12 } })
+    const { data } = await api.get('/mercadolivre/produtos', { params: { q: busca.value, limit: 12 } })
     resultados.value = data
   } catch (e) {
     erro.value = mensagemDeErro(e)

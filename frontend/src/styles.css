@@ -80,12 +80,16 @@ button { cursor: pointer; }
 
 .produto-card { display: flex; flex-direction: column; background: #fff; border: 1px solid #ece9df; border-radius: 16px; overflow: hidden; transition: transform .2s, box-shadow .2s; }
 .produto-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
-.produto-foto { display: grid; place-items: center; aspect-ratio: 4 / 3; background: #fff; font-size: 34px; }
-.produto-foto img { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
+.produto-foto { position: relative; display: grid; place-items: center; aspect-ratio: 4 / 3; background: #fff; font-size: 34px; }
+.produto-foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 10px; }
 .produto-info { padding: 10px 14px 14px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
 .produto-info small { font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--green); }
 .produto-info p { margin: 0; font-size: 13px; font-weight: 600; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.produto-preco { margin-top: auto; font: 800 19px "Baloo 2", sans-serif; color: var(--ink); line-height: 1.2; }
+.produto-preco small { display: block; font: 600 10px "Quicksand", sans-serif; letter-spacing: 0; text-transform: none; color: var(--muted); }
 .produto-link { margin-top: auto; font-size: 12px; font-weight: 800; color: var(--orange-dark); }
+.produto-preco + .produto-link { margin-top: 4px; }
+.produto-card.compacto .produto-preco { font-size: 16px; }
 .produto-card.compacto { flex-direction: row; align-items: center; }
 .produto-card.compacto .produto-foto { width: 76px; flex: none; aspect-ratio: 1; }
 .produto-card.compacto .produto-foto img { padding: 6px; }

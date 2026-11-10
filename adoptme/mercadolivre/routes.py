@@ -31,9 +31,12 @@ def buscar_produtos():
     if not q:
         abort(400, description="Informe o termo de busca (q)")
     limit = request.args.get("limit", 10, type=int)
-    return jsonify(services.buscar_produtos(q, limit=limit))
+    return jsonify(services.buscar_produtos(q, limit=min(limit, 24)))
 
 
 @mercadolivre_bp.get("/produtos/<product_id>")
 def obter_produto(product_id):
-    return jsonify(services.obter_produto(product_id))
+    produto = services.obter_produto(product_id)
+    if not produto:
+        abort(404, description="Produto nao encontrado ou sem anuncio a venda")
+    return jsonify(produto)

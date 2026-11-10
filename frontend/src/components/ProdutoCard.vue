@@ -3,6 +3,8 @@ defineProps({
   produto: { type: Object, required: true },
   compacto: { type: Boolean, default: false }
 })
+
+const reais = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
 </script>
 
 <template>
@@ -14,6 +16,8 @@ defineProps({
     <div class="produto-info">
       <small v-if="produto.categoria">{{ produto.categoria }}</small>
       <p>{{ produto.nome }}</p>
+      <!-- o preco e o menor entre os anuncios do produto no Mercado Livre -->
+      <span v-if="produto.preco != null" class="produto-preco"><small>a partir de</small> {{ reais.format(produto.preco) }}</span>
       <span class="produto-link">Ver no Mercado Livre ↗</span>
     </div>
   </a>
