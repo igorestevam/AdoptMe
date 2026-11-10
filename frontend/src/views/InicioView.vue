@@ -3,6 +3,7 @@ import { ref, watch, onMounted } from 'vue'
 import api, { mensagemDeErro } from '../services/api.js'
 import BannerProdutos from '../components/BannerProdutos.vue'
 import AnimalCard from '../components/AnimalCard.vue'
+import AnuncioParceiro from '../components/AnuncioParceiro.vue'
 
 const animais = ref([])
 const carregando = ref(true)
@@ -67,6 +68,7 @@ onMounted(carregar)
 
   <section id="animais" class="section section-pets">
     <div class="wrap">
+      <AnuncioParceiro horizontal class="anuncio-inicio" />
       <div class="section-heading">
         <p class="eyebrow">Esperando por um lar</p>
         <h2>Animais <em>disponíveis</em> para adoção</h2>

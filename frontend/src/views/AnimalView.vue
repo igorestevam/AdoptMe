@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import api, { mensagemDeErro } from '../services/api.js'
 import { auth } from '../services/auth.js'
 import { especie, sexo, porte, idade, tipoResponsavel, FOTO_PADRAO } from '../services/formatos.js'
+import AnuncioParceiro from '../components/AnuncioParceiro.vue'
 
 const route = useRoute()
 const animal = ref(null)
@@ -66,6 +67,7 @@ watch(() => route.params.id, carregar, { immediate: true })
               <img :src="f" :alt="`Foto ${i + 1} de ${animal.nome}`" />
             </button>
           </div>
+          <AnuncioParceiro class="anuncio-detalhe" />
         </div>
 
         <div class="detalhe-info">

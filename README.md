@@ -32,6 +32,21 @@ em toda conexao (`adoptme/ext/db/__init__.py`).
 flask --app app.py seed-db   # cria as tabelas e insere dados de exemplo (senha: senha123)
 ```
 
+### Anuncios das empresas parceiras (cobranca por clique)
+
+As empresas e os anuncios sao cadastrados pela equipe da plataforma, pelo terminal:
+
+```bash
+flask --app app.py nova-empresa "PetShop Amigo" "27 3333-0000" --email contato@petshop.com
+flask --app app.py novo-anuncio 1 "10% de desconto na primeira racao" https://petshop.com/promo
+flask --app app.py anuncios                                      # lista empresas, anuncios e cliques
+flask --app app.py relatorio-cliques --de 2026-11-01 --ate 2026-11-30   # base da cobranca
+```
+
+O site sorteia um anuncio na pagina inicial e na pagina de cada animal. O clique passa por
+`/api/parceiros/anuncios/<id>/clique`, que registra e redireciona; cliques repetidos do mesmo
+visitante no mesmo anuncio, dentro de 30 minutos, nao contam.
+
 ### Testes de persistencia
 
 ```bash
