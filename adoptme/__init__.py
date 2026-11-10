@@ -1,4 +1,7 @@
-from flask import Flask
+import os
+
+from flask import Flask, jsonify
+from werkzeug.exceptions import HTTPException
 
 from .config import Config
 from .extensions import cors, migrate
@@ -8,6 +11,8 @@ from .ext.db import db, init_app as init_db, register_models
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    if not app.config.get("UPLOAD_FOLDER"):
+        app.config["UPLOAD_FOLDER"] = os.path.join(app.instance_path, "uploads")
 
     # extensoes / banco
     init_db(app)
@@ -27,6 +32,11 @@ def create_app(config_class=Config):
     init_animais(app)
     init_parceiros(app)
     init_mercadolivre(app)
+
+    # erros da API em JSON, para o frontend mostrar a mensagem
+    @app.errorhandler(HTTPException)
+    def erro_http(e):
+        return jsonify({"erro": e.description}), e.code
 
     @app.get("/api/health")
     def health():

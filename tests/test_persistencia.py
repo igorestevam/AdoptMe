@@ -64,7 +64,7 @@ def test_campo_obrigatorio_nulo_e_rejeitado(session):
 
 def dados_cadastro(**campos):
     dados = {
-        "nome": "Joao", "cpf_cnpj": "111.222.333-44", "telefone": "27988887777",
+        "nome": "Joao", "cpf_cnpj": "529.982.247-25", "telefone": "27988887777",
         "email": "joao@teste.com", "senha": "minhasenha",
         "endereco": {
             "estado": "ES", "cidade": "Vitoria", "bairro": "Centro",
@@ -93,6 +93,12 @@ def test_cadastro_sem_endereco_e_rejeitado(client, session):
     del dados["endereco"]
     assert client.post("/api/auth/register", json=dados).status_code == 400
     assert contar(session, Usuario) == 0
+
+
+def test_cadastro_com_email_repetido_e_rejeitado(client, session):
+    assert client.post("/api/auth/register", json=dados_cadastro()).status_code == 201
+    assert client.post("/api/auth/register", json=dados_cadastro(nome="Outro")).status_code == 409
+    assert contar(session, Usuario) == 1
 
 
 def test_cadastro_com_endereco_incompleto_e_rejeitado(client, session):

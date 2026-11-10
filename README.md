@@ -45,6 +45,9 @@ Os testes usam SQLite em memoria (`TestConfig`) e nao tocam no `instance/adoptme
 - `SECRET_KEY`, `DATABASE_URL`
 - `ML_CLIENT_ID`, `ML_CLIENT_SECRET`, `ML_SITE_ID` (integracao Mercado Livre)
 
+Copie `.env.example` para `.env` e preencha; o `flask run` le o `.env` sozinho
+(`python-dotenv`). O `.env` nao vai para o git.
+
 ## Frontend
 
 ```bash
@@ -52,6 +55,16 @@ cd frontend
 npm install
 npm run dev     # http://localhost:5173 (proxy /api -> :5000)
 ```
+
+Para apontar o proxy para outro backend: `API_URL=http://localhost:5001 npm run dev`.
+
+Telas (`frontend/src/views`): inicio com o banner do Mercado Livre e a lista de animais,
+detalhes do animal (com contato do responsavel e manifestacao de interesse), perfil do
+responsavel, sugestoes de compras, entrar e cadastro (endereco pelo CEP e dados pelo CNPJ).
+O login usa a sessao do Flask (cookie), que passa pelo proxy do Vite.
+
+As fotos enviadas pelos anunciantes ficam em `instance/uploads` (fora do git). Para usar
+outra pasta, defina `UPLOAD_FOLDER`.
 
 ## Modulos (dominios)
 - `auth`        -> Usuario, Endereco

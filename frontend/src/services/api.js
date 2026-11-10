@@ -5,4 +5,8 @@ const api = axios.create({
   timeout: 8000
 })
 
+export function mensagemDeErro(e, padrao = 'Algo deu errado. Tente novamente.') {
+  return e.response?.data?.erro || padrao
+}
+
 export default api

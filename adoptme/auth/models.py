@@ -16,7 +16,7 @@ class Usuario(db.Model):
 
     id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
     nome: Mapped[str] = mapped_column(db.String(150), nullable=False)
-    cpf_cnpj: Mapped[str] = mapped_column(db.String(18), nullable=False)
+    cpf_cnpj: Mapped[str] = mapped_column(db.String(18), nullable=False, unique=True)
     telefone: Mapped[str] = mapped_column(db.String(20), nullable=False)
     data_nascimento: Mapped[Optional[date]] = mapped_column(db.Date)
     email: Mapped[str] = mapped_column(db.String(150), nullable=False, unique=True, index=True)

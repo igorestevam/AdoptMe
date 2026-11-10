@@ -1,34 +1,64 @@
 <script setup>
-// SCAFFOLD INICIAL - a interface definitiva sera baseada no codigo anterior do time.
-// Lista os animais disponiveis so para validar a conexao com a API.
-import { ref, onMounted } from 'vue'
-import api from './services/api.js'
+import { ref, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { auth, carregarUsuario, sair } from './services/auth.js'
 
-const animais = ref([])
-const erro = ref(null)
+const route = useRoute()
+const router = useRouter()
+const menuAberto = ref(false)
 
-onMounted(async () => {
-  try {
-    const { data } = await api.get('/animais')
-    animais.value = data
-  } catch (e) {
-    erro.value = 'Nao foi possivel carregar os animais. O backend esta rodando?'
-  }
-})
+onMounted(() => { if (!auth.carregado) carregarUsuario() })
+watch(() => route.fullPath, () => { menuAberto.value = false })
+
+async function fazerLogout() {
+  await sair()
+  router.push('/')
+}
 </script>
 
 <template>
-  <main style="max-width: 900px; margin: 0 auto; padding: 24px; font-family: system-ui, sans-serif;">
-    <h1>AdoptMe</h1>
-    <p>Animais disponiveis para adocao</p>
+  <header class="site-header">
+    <nav class="nav wrap" aria-label="Navegação principal">
+      <RouterLink class="brand" to="/"><span class="brand-mark">🐾</span><span>Adopt<span>Me</span></span></RouterLink>
+      <button class="menu-toggle" type="button" @click="menuAberto = !menuAberto" :aria-expanded="menuAberto" aria-label="Abrir menu">☰</button>
 
-    <p v-if="erro" style="color: #b00;">{{ erro }}</p>
-    <p v-else-if="animais.length === 0">Nenhum animal cadastrado ainda.</p>
+      <div class="nav-links" :class="{ open: menuAberto }">
+        <RouterLink to="/">Animais</RouterLink>
+        <RouterLink to="/sugestoes">Sugestões de compras</RouterLink>
+        <template v-if="auth.usuario">
+          <RouterLink v-if="auth.usuario.anunciante_id" to="/painel">Meus animais</RouterLink>
+          <span class="nav-user">Olá, {{ auth.usuario.nome.split(' ')[0] }}</span>
+          <button class="link-button" type="button" @click="fazerLogout">Sair</button>
+        </template>
+        <template v-else-if="auth.carregado">
+          <RouterLink to="/entrar">Entrar</RouterLink>
+          <RouterLink class="button button-orange nav-cta" to="/cadastro">Criar conta</RouterLink>
+        </template>
+      </div>
+    </nav>
+  </header>
 
-    <ul>
-      <li v-for="a in animais" :key="a.id">
-        <strong>{{ a.nome }}</strong> - {{ a.especie }} ({{ a.situacao }})
-      </li>
-    </ul>
+  <main>
+    <RouterView />
   </main>
+
+  <footer class="footer">
+    <div class="wrap footer-grid">
+      <div>
+        <RouterLink class="brand footer-brand" to="/"><span class="brand-mark">🐾</span><span>Adopt<span>Me</span></span></RouterLink>
+        <p>Animais para adoção de ONGs, abrigos e protetores, reunidos num só lugar.</p>
+      </div>
+      <div>
+        <h3>Navegue</h3>
+        <RouterLink to="/">Animais para adoção</RouterLink>
+        <RouterLink to="/sugestoes">Sugestões de compras</RouterLink>
+        <RouterLink to="/cadastro">Divulgar um animal</RouterLink>
+      </div>
+      <div>
+        <h3>Compras</h3>
+        <p>Os produtos são vendidos no Mercado Livre. O AdoptMe não processa pagamentos.</p>
+      </div>
+    </div>
+    <div class="footer-bottom"><div class="wrap">© {{ new Date().getFullYear() }} AdoptMe · Projeto acadêmico.</div></div>
+  </footer>
 </template>

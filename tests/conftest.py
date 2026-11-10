@@ -7,6 +7,7 @@ from adoptme.ext.db import db
 from adoptme.auth.models import Usuario, Endereco
 from adoptme.anunciantes.models import Anunciante
 from adoptme.animais.models import Animal
+from adoptme.auth.validacao import _digito, formatar_documento
 
 
 @pytest.fixture
@@ -25,6 +26,14 @@ def session(app):
     return db.session
 
 
+def gerar_cpf(n: int) -> str:
+    """CPF valido e diferente para cada n (o CPF/CNPJ e unico no banco)."""
+    base = f"{n:09d}"
+    dv1 = _digito(base, range(10, 1, -1))
+    dv2 = _digito(base + str(dv1), range(11, 1, -1))
+    return formatar_documento(f"{base}{dv1}{dv2}")
+
+
 # fabricas: cada uma devolve uma funcao que cria e persiste o registro
 
 @pytest.fixture
@@ -35,7 +44,7 @@ def criar_usuario(session):
         contador["n"] += 1
         dados = {
             "nome": f"Usuario {contador['n']}",
-            "cpf_cnpj": "123.456.789-09",
+            "cpf_cnpj": gerar_cpf(100 + contador["n"]),
             "telefone": "27999990000",
             "email": f"usuario{contador['n']}@teste.com",
             "senha_hash": generate_password_hash("senha123"),

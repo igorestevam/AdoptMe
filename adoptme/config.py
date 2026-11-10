@@ -7,6 +7,10 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = True
 
+    # fotos enviadas pelos anunciantes; sem valor, usa instance/uploads
+    UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "")
+    MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5 MB por requisicao
+
     # Integracao Mercado Livre (registrar aplicacao no portal de desenvolvedores)
     ML_CLIENT_ID = os.getenv("ML_CLIENT_ID", "")
     ML_CLIENT_SECRET = os.getenv("ML_CLIENT_SECRET", "")

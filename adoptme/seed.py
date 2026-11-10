@@ -54,7 +54,7 @@ def seed() -> bool:
     if db.session.query(Usuario.id).first():
         return False
 
-    ong = _usuario("Abrigo Patinhas", "12.345.678/0001-90", "ong@adoptme.dev", "Vila Velha")
+    ong = _usuario("Abrigo Patinhas", "12.345.678/0001-95", "ong@adoptme.dev", "Vila Velha")
     ong.anunciante = Anunciante(tipo="organizacao", descricao="ONG de resgate e adocao responsavel.")
 
     tutora = _usuario("Ana Souza", "123.456.789-09", "ana@adoptme.dev", "Vitoria", date(1995, 5, 20))
