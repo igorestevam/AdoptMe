@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import api, { mensagemDeErro } from '../services/api.js'
 import ProdutoCard from '../components/ProdutoCard.vue'
+import AnuncioParceiro from '../components/AnuncioParceiro.vue'
 
 const grupos = ref([])
 const carregando = ref(true)
@@ -63,6 +64,8 @@ async function buscar() {
           </button>
         </div>
       </form>
+
+      <AnuncioParceiro horizontal class="anuncio-inicio" />
 
       <p v-if="erro" class="notice error">{{ erro }}</p>
       <p v-else-if="carregando || buscando" class="notice">Carregando produtos...</p>
