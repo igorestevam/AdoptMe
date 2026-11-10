@@ -39,10 +39,12 @@ button { cursor: pointer; }
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--line);
 }
-.nav { min-height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.nav { min-height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 27px; line-height: 1; }
 .brand > span:last-child > span { color: var(--orange); }
-.brand-mark { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 15px 15px 15px 5px; background: var(--green); color: #fff; font-size: 21px; }
+.brand-logo { height: 64px; width: auto; }
+.brand-mark { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px 15px 15px 5px; background: var(--cream); }
+.brand-mark img { width: 38px; height: auto; }
 .nav-links { display: flex; align-items: center; gap: 24px; font-size: 14px; font-weight: 700; color: #657168; }
 .nav-links a:hover, .text-link:hover, .link-button:hover { color: var(--orange); }
 .nav-links a.router-link-exact-active:not(.button) { color: var(--green-dark); }
@@ -249,8 +251,9 @@ button { cursor: pointer; }
 @media (max-width: 760px) {
   .wrap { width: calc(100% - 32px); }
   .menu-toggle { display: block; margin-left: auto; }
+  .brand-logo { height: 54px; }
   .nav-links {
-    display: none; position: absolute; top: 74px; left: 0; right: 0;
+    display: none; position: absolute; top: 80px; left: 0; right: 0;
     flex-direction: column; align-items: stretch; gap: 14px; padding: 18px 24px 22px;
     background: var(--cream); border-bottom: 1px solid var(--line);
   }

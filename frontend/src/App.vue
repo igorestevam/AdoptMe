@@ -2,6 +2,8 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { auth, carregarUsuario, sair } from './services/auth.js'
+import logo from './images/logo.png'
+import logoIcone from './images/logo-icone.png'
 
 const route = useRoute()
 const router = useRouter()
@@ -19,7 +21,9 @@ async function fazerLogout() {
 <template>
   <header class="site-header">
     <nav class="nav wrap" aria-label="Navegação principal">
-      <RouterLink class="brand" to="/"><span class="brand-mark">🐾</span><span>Adopt<span>Me</span></span></RouterLink>
+      <RouterLink class="brand" to="/" aria-label="AdoptMe, página inicial">
+        <img class="brand-logo" :src="logo" alt="AdoptMe" width="490" height="169" />
+      </RouterLink>
       <button class="menu-toggle" type="button" @click="menuAberto = !menuAberto" :aria-expanded="menuAberto" aria-label="Abrir menu">☰</button>
 
       <div class="nav-links" :class="{ open: menuAberto }">
@@ -45,7 +49,9 @@ async function fazerLogout() {
   <footer class="footer">
     <div class="wrap footer-grid">
       <div>
-        <RouterLink class="brand footer-brand" to="/"><span class="brand-mark">🐾</span><span>Adopt<span>Me</span></span></RouterLink>
+        <RouterLink class="brand footer-brand" to="/">
+          <span class="brand-mark"><img :src="logoIcone" alt="" width="122" height="129" /></span><span>Adopt<span>Me</span></span>
+        </RouterLink>
         <p>Animais para adoção de ONGs, abrigos e protetores, reunidos num só lugar.</p>
       </div>
       <div>
