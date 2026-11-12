@@ -58,7 +58,8 @@ async function fazerLogout() {
         <h3>Navegue</h3>
         <RouterLink to="/">Animais para adoção</RouterLink>
         <RouterLink to="/sugestoes">Sugestões de compras</RouterLink>
-        <RouterLink to="/cadastro">Divulgar um animal</RouterLink>
+        <RouterLink v-if="auth.usuario?.anunciante_id" to="/painel/animais/novo">Cadastrar um animal</RouterLink>
+        <RouterLink v-else-if="auth.carregado && !auth.usuario" :to="{ path: '/cadastro', query: { divulgar: 1 } }">Divulgar um animal</RouterLink>
       </div>
       <div>
         <h3>Compras</h3>

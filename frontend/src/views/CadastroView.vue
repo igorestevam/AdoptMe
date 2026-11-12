@@ -12,7 +12,8 @@ const form = reactive({
   nome: '', cpf_cnpj: '', telefone: '', data_nascimento: '', email: '', senha: '',
   endereco: { cep: '', rua: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '' }
 })
-const divulgar = ref(false)
+// quem chega pelo link "Quero divulgar um animal" ja vem com a opcao marcada
+const divulgar = ref(Boolean(route.query.divulgar))
 const anunciante = reactive({ tipo: 'pessoa_fisica', descricao: '' })
 
 const aviso = ref('')

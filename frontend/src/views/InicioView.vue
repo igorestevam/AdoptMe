@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 import api, { mensagemDeErro } from '../services/api.js'
+import { auth } from '../services/auth.js'
 import BannerProdutos from '../components/BannerProdutos.vue'
 import AnimalCard from '../components/AnimalCard.vue'
 import AnuncioParceiro from '../components/AnuncioParceiro.vue'
@@ -55,7 +56,8 @@ onMounted(carregar)
         </p>
         <div class="hero-actions">
           <a class="button button-orange" href="#animais">Conhecer os animais <span>→</span></a>
-          <RouterLink class="text-link" to="/cadastro">Quero divulgar um animal</RouterLink>
+          <RouterLink v-if="auth.usuario?.anunciante_id" class="text-link" to="/painel/animais/novo">Cadastrar um animal</RouterLink>
+          <RouterLink v-else-if="auth.carregado && !auth.usuario" class="text-link" :to="{ path: '/cadastro', query: { divulgar: 1 } }">Quero divulgar um animal</RouterLink>
         </div>
       </div>
       <div class="hero-visual">
