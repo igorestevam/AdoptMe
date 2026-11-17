@@ -1,9 +1,9 @@
-"""Gera o .zip da entrega do projeto (GrupoX_AdoptMe.zip) na pasta acima do projeto.
+"""Gera o .zip da entrega do projeto (GrupoIgorJoaoCauan_AdoptMe.zip) na pasta acima do projeto.
 
 Uso (na raiz do projeto):
-    python scripts/gerar_entrega.py --grupo 3
-    python scripts/gerar_entrega.py --grupo 3 --com-env      # inclui o .env (credenciais do Mercado Livre)
-    python scripts/gerar_entrega.py --grupo 3 --com-dados    # inclui o banco e as fotos de instance/
+    python scripts/gerar_entrega.py
+    python scripts/gerar_entrega.py --com-env      # inclui o .env (credenciais do Mercado Livre)
+    python scripts/gerar_entrega.py --com-dados    # inclui o banco e as fotos de instance/
 
 Fica de fora o que e gerado ou reinstalado (venv, __pycache__, node_modules, dist, caches).
 """
@@ -13,6 +13,7 @@ import zipfile
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
+NOME_ZIP = "GrupoIgorJoaoCauan_AdoptMe.zip"
 PASTAS_FORA = {".venv", "venv", "__pycache__", "node_modules", "dist", ".pytest_cache", "htmlcov", ".idea", ".vscode"}
 ARQUIVOS_FORA = {".coverage", "CLAUDE.md"}
 
@@ -35,12 +36,11 @@ def deve_entrar(caminho: Path, com_env: bool, com_dados: bool) -> bool:
 
 def main():
     parser = argparse.ArgumentParser(description="Gera o .zip da entrega do AdoptMe")
-    parser.add_argument("--grupo", required=True, help="numero do grupo (ex.: 3)")
     parser.add_argument("--com-env", action="store_true", help="inclui o .env com as credenciais")
     parser.add_argument("--com-dados", action="store_true", help="inclui instance/ (banco e fotos)")
     args = parser.parse_args()
 
-    destino = RAIZ.parent / f"Grupo{args.grupo}_AdoptMe.zip"
+    destino = RAIZ.parent / NOME_ZIP
     total = 0
     with zipfile.ZipFile(destino, "w", zipfile.ZIP_DEFLATED) as z:
         for pasta, subpastas, arquivos in os.walk(RAIZ):
