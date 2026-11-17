@@ -1,3 +1,4 @@
+import logging
 from datetime import date
 
 from flask import session
@@ -11,6 +12,14 @@ from .validacao import UFS, so_digitos, formatar_documento, formatar_cep, email_
 CAMPOS_USUARIO = ("nome", "cpf_cnpj", "telefone", "email", "senha")
 CAMPOS_ENDERECO = ("estado", "cidade", "bairro", "rua", "numero", "cep")
 TIPOS_ANUNCIANTE = ("organizacao", "pessoa_fisica")
+
+logger = logging.getLogger(__name__)
+
+
+def _mascarar(email: str) -> str:
+    """joao@teste.com -> j***@teste.com (o log nao guarda o email inteiro)."""
+    nome, _, dominio = (email or "").partition("@")
+    return f"{nome[:1]}***@{dominio}"
 
 
 def _serialize(u: Usuario) -> dict:
@@ -98,13 +107,16 @@ def criar_usuario(dados: dict) -> dict:
         u.anunciante = Anunciante(tipo=anunciante["tipo"], descricao=anunciante.get("descricao") or None)
     db.session.add(u)
     db.session.commit()
+    logger.info("Usuario %s cadastrado (anunciante: %s)", u.id, u.anunciante.tipo if u.anunciante else "nao")
     return _serialize(u)
 
 
 def autenticar(email: str, senha: str) -> dict | None:
     u = Usuario.query.filter_by(email=(email or "").strip().lower()).first()
     if u and check_password_hash(u.senha_hash, senha):
+        logger.info("Usuario %s entrou", u.id)
         return _serialize(u)
+    logger.warning("Login recusado para %s", _mascarar(email))
     return None
 
 

@@ -1,10 +1,13 @@
 """Fotos de animais enviadas pelo anunciante (guardadas em instance/uploads)."""
+import logging
 import os
 import uuid
 
 from flask import current_app
 
 URL_FOTOS = "/api/animais/fotos/"
+
+logger = logging.getLogger(__name__)
 
 # os primeiros bytes de cada formato aceito
 ASSINATURAS = {
@@ -34,10 +37,12 @@ def salvar_foto(arquivo) -> str:
     """Grava a imagem com um nome aleatorio e devolve a URL publica dela."""
     extensao = _formato(arquivo.stream.read(12))
     if not extensao:
+        logger.warning("Arquivo recusado no envio de foto: %s", arquivo.filename)
         raise ValueError("Envie uma imagem JPG, PNG, WEBP ou GIF")
     arquivo.stream.seek(0)
     nome = f"{uuid.uuid4().hex}.{extensao}"
     arquivo.save(os.path.join(pasta(), nome))
+    logger.info("Foto salva: %s", nome)
     return URL_FOTOS + nome
 
 

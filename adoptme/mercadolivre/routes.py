@@ -1,12 +1,16 @@
+import logging
+
 from flask import Blueprint, jsonify, request, abort
 
 from . import services
 
 mercadolivre_bp = Blueprint("mercadolivre", __name__)
+logger = logging.getLogger(__name__)
 
 
 @mercadolivre_bp.errorhandler(services.MercadoLivreIndisponivel)
 def ml_indisponivel(e):
+    logger.warning("Mercado Livre indisponivel: %s (%s)", e, e.__cause__ or "sem detalhe")
     return jsonify({"erro": str(e)}), 503
 
 

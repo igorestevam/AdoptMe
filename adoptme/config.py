@@ -2,10 +2,12 @@ import os
 
 
 class Config:
+    # valores vindos do .env (lido pelo python-dotenv no "flask run")
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-adoptme")
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///adoptme.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    DEBUG = True
+    DEBUG = os.getenv("FLASK_DEBUG", "0").lower() in ("1", "true")
+    LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 
     # fotos enviadas pelos anunciantes; sem valor, usa instance/uploads
     UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "")

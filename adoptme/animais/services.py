@@ -1,3 +1,4 @@
+import logging
 import re
 
 from sqlalchemy import or_
@@ -11,6 +12,8 @@ PORTES = ("pequeno", "medio", "grande")
 SEXOS = ("macho", "femea")
 SITUACOES = ("disponivel", "adotado")
 MAX_FOTOS = 5
+
+logger = logging.getLogger(__name__)
 FOTO_ENVIADA = re.compile(re.escape(URL_FOTOS) + r"[0-9a-f]{32}\.(jpg|png|gif|webp)$")
 
 
@@ -73,6 +76,7 @@ def registrar_interesse(animal_id: int, usuario_id: int, mensagem: str | None = 
     interesse = InteresseAdocao(animal=animal, usuario_id=usuario_id, mensagem=mensagem or None)
     db.session.add(interesse)
     db.session.commit()
+    logger.info("Interesse do usuario %s no animal %s", usuario_id, animal.id)
     return {"id": interesse.id, "animal_id": animal.id, "mensagem": interesse.mensagem}
 
 
@@ -138,6 +142,7 @@ def cadastrar_animal(anunciante_id: int, dados: dict) -> dict:
     animal.fotos = [FotoAnimal(url=f) for f in fotos]
     db.session.add(animal)
     db.session.commit()
+    logger.info("Animal %s cadastrado pelo anunciante %s", animal.id, anunciante_id)
     return _serialize(animal)
 
 
@@ -153,6 +158,7 @@ def editar_animal(animal_id: int, anunciante_id: int, dados: dict) -> dict | Non
     animal.fotos = [FotoAnimal(url=f) for f in fotos]
     db.session.commit()
     apagar_fotos(retiradas)
+    logger.info("Animal %s editado", animal.id)
     return _serialize(animal)
 
 
@@ -164,6 +170,7 @@ def alterar_situacao(animal_id: int, anunciante_id: int, situacao: str) -> dict 
         return None
     animal.situacao = situacao
     db.session.commit()
+    logger.info("Animal %s agora esta %s", animal.id, situacao)
     return _serialize(animal)
 
 
@@ -175,6 +182,7 @@ def remover_animal(animal_id: int, anunciante_id: int) -> bool:
     db.session.delete(animal)
     db.session.commit()
     apagar_fotos(urls)
+    logger.info("Animal %s removido pelo anunciante %s", animal_id, anunciante_id)
     return True
 
 

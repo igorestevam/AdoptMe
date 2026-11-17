@@ -1,10 +1,11 @@
 import os
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from werkzeug.exceptions import HTTPException
 
 from .config import Config
 from .extensions import cors, migrate
+from .logs import configurar_logging
 from .ext.db import db, init_app as init_db, register_models
 
 
@@ -13,6 +14,7 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
     if not app.config.get("UPLOAD_FOLDER"):
         app.config["UPLOAD_FOLDER"] = os.path.join(app.instance_path, "uploads")
+    logger = configurar_logging(app)
 
     # extensoes / banco
     init_db(app)
@@ -37,6 +39,12 @@ def create_app(config_class=Config):
     @app.errorhandler(HTTPException)
     def erro_http(e):
         return jsonify({"erro": e.description}), e.code
+
+    # erro inesperado: registra o detalhe no log e devolve uma mensagem generica
+    @app.errorhandler(Exception)
+    def erro_inesperado(e):
+        logger.exception("Erro inesperado em %s %s", request.method, request.path)
+        return jsonify({"erro": "Erro interno. Tente novamente mais tarde."}), 500
 
     @app.get("/api/health")
     def health():

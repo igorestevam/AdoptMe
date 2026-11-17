@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import func
@@ -7,6 +8,8 @@ from .models import EmpresaParceira, Anuncio, CliqueAnuncio
 
 # cliques repetidos da mesma sessao no mesmo anuncio, dentro deste intervalo, nao contam
 INTERVALO_CLIQUE_REPETIDO = timedelta(minutes=30)
+
+logger = logging.getLogger(__name__)
 
 
 def _agora() -> datetime:
@@ -44,6 +47,9 @@ def registrar_clique(anuncio_id: int, sessao: str | None = None) -> str | None:
     if not repetido:
         db.session.add(CliqueAnuncio(anuncio_id=anuncio.id, sessao=sessao))
         db.session.commit()
+        logger.info("Clique registrado no anuncio %s", anuncio.id)
+    else:
+        logger.info("Clique repetido no anuncio %s ignorado", anuncio.id)
     return anuncio.link_destino
 
 
@@ -56,6 +62,7 @@ def cadastrar_empresa(nome: str, telefone: str, email: str | None = None) -> Emp
     empresa = EmpresaParceira(nome=nome, telefone=telefone, email=(email or "").strip() or None)
     db.session.add(empresa)
     db.session.commit()
+    logger.info("Empresa parceira %s cadastrada", empresa.id)
     return empresa
 
 
@@ -70,6 +77,7 @@ def cadastrar_anuncio(empresa_id: int, conteudo: str, link_destino: str) -> Anun
     anuncio = Anuncio(empresa_parceira_id=empresa_id, conteudo=conteudo, link_destino=link_destino)
     db.session.add(anuncio)
     db.session.commit()
+    logger.info("Anuncio %s cadastrado para a empresa %s", anuncio.id, empresa_id)
     return anuncio
 
 
