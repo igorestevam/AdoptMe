@@ -9,6 +9,7 @@ const routes = [
   { path: '/sugestoes', name: 'sugestoes', component: () => import('./views/SugestoesView.vue') },
   { path: '/entrar', name: 'entrar', component: () => import('./views/EntrarView.vue'), meta: { visitante: true } },
   { path: '/cadastro', name: 'cadastro', component: () => import('./views/CadastroView.vue'), meta: { visitante: true } },
+  { path: '/conta', name: 'conta', component: () => import('./views/ContaView.vue'), meta: { logado: true } },
   { path: '/painel', name: 'painel', component: () => import('./views/PainelView.vue'), meta: { anunciante: true } },
   { path: '/painel/animais/novo', name: 'novo-animal', component: () => import('./views/AnimalFormView.vue'), meta: { anunciante: true } },
   { path: '/painel/animais/:id/editar', name: 'editar-animal', component: () => import('./views/AnimalFormView.vue'), meta: { anunciante: true } },
@@ -23,14 +24,14 @@ const router = createRouter({
   }
 })
 
-// o painel so abre para quem entrou com perfil de anunciante;
+// minha conta pede login; o painel so abre para quem tem perfil de anunciante;
 // entrar e cadastro nao fazem sentido para quem ja esta logado
 router.beforeEach(async (to) => {
-  if (!to.meta.anunciante && !to.meta.visitante) return true
+  if (!to.meta.anunciante && !to.meta.visitante && !to.meta.logado) return true
   if (!auth.carregado) await carregarUsuario()
   if (to.meta.visitante) return auth.usuario ? '/' : true
   if (!auth.usuario) return { path: '/entrar', query: { voltar: to.fullPath } }
-  if (!auth.usuario.anunciante_id) return '/'
+  if (to.meta.anunciante && !auth.usuario.anunciante_id) return '/'
   return true
 })
 

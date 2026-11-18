@@ -31,7 +31,7 @@ async function fazerLogout() {
         <RouterLink to="/sugestoes">Sugestões de compras</RouterLink>
         <template v-if="auth.usuario">
           <RouterLink v-if="auth.usuario.anunciante_id" to="/painel">Meus animais</RouterLink>
-          <span class="nav-user">Olá, {{ auth.usuario.nome.split(' ')[0] }}</span>
+          <RouterLink class="nav-user" to="/conta" title="Minha conta">Olá, {{ auth.usuario.nome.split(' ')[0] }}</RouterLink>
           <button class="link-button" type="button" @click="fazerLogout">Sair</button>
         </template>
         <template v-else-if="auth.carregado">

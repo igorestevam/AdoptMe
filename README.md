@@ -89,7 +89,7 @@ adoptme/
   mercadolivre/         # integracao com a API do Mercado Livre (sem tabelas)
 tests/                  # testes pytest
 frontend/src/
-  views/                # telas (inicio, animal, perfil, sugestoes, entrar, cadastro, painel)
+  views/                # telas (inicio, animal, perfil, sugestoes, entrar, cadastro, minha conta, painel)
   components/           # cards de animal e produto, banner, anuncio
   services/             # chamadas a API, sessao, consultas de CEP/CNPJ
 ```

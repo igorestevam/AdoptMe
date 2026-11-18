@@ -40,3 +40,35 @@ def me():
     if not usuario:
         abort(401, description="Nao autenticado")
     return jsonify(services.obter_usuario(usuario.id))
+
+
+def _logado():
+    usuario = services.usuario_logado()
+    if not usuario:
+        abort(401, description="Nao autenticado")
+    return usuario
+
+
+@auth_bp.get("/conta")
+def ver_conta():
+    return jsonify(services.obter_conta(_logado()))
+
+
+@auth_bp.put("/conta")
+def atualizar_conta():
+    usuario = _logado()
+    try:
+        return jsonify(services.atualizar_conta(usuario, request.get_json(silent=True) or {}))
+    except ValueError as e:
+        abort(400, description=str(e))
+
+
+@auth_bp.put("/senha")
+def trocar_senha():
+    usuario = _logado()
+    dados = request.get_json(silent=True) or {}
+    try:
+        services.trocar_senha(usuario, dados.get("senha_atual"), dados.get("nova_senha"))
+    except ValueError as e:
+        abort(400, description=str(e))
+    return "", 204
