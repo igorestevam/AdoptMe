@@ -62,7 +62,7 @@ Veja `.env.example`. Todas sao opcionais em desenvolvimento.
 
 | Variavel | Uso |
 |---|---|
-| `ML_CLIENT_ID`, `ML_CLIENT_SECRET` | Credenciais da aplicacao no Mercado Livre (sem elas, o site informa que as sugestoes estao indisponiveis) |
+| `ML_CLIENT_ID=8091084609428812`, `ML_CLIENT_SECRET=DhHNQblMKRdMZmsy7AcxvCccN1yXmjlc` | Credenciais da aplicacao no Mercado Livre (sem elas, o site informa que as sugestoes estao indisponiveis) |
 | `SECRET_KEY` | Chave que assina o cookie de sessao |
 | `FLASK_DEBUG` | `1` para modo de desenvolvimento |
 | `LOG_LEVEL` | Nivel do log (`INFO` por padrao) |
